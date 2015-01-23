@@ -1,0 +1,14 @@
+{
+    "bryan": {
+        "name": "Bryan",
+        "password": "test123"
+    },
+    "yoyo": {
+        "name": "Yoyyo",
+        "password": "sucker"
+    },
+    "phone": {
+        "name": "Mobile",
+        "password": "suck"
+    }
+}

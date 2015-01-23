@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/path.js/0.8.4/path.min.js"></script>
+    <script src="https://cdn.firebase.com/v0/firebase-token-generator.js"></script>
+    <script src="http://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/1.5.0/annyang.min.js"></script>
+    <script src="app.js"></script>
+    <script src="auth.js"></script>
+    <title>Daily Checklist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div class="navbar navbar-default">
+        <div class="container-fluid">
+            <ul id="nav-system" class="nav nav-pills pull-left" style="margin-top: 0.3%;">
+                <li data-name="home"><a href="#home">Home</a>
+                </li>
+                <li data-name="profile"><a href="#profile">Profile</a>
+                </li>
+                <li data-name="messages"><a href="#messages">Messages</a>
+                </li>
+            </ul>
+            <!-- </div> -->
+            <!-- <div class="container container-fluid"> -->
+            <div class="nav navbar-nav nav-pills pull-right">
+                <ul class="nav navbar-nav dropdown">
+                    <li href="#" data-toggle="dropdown" class="dropdown-toggle">Bryan</li>
+                </ul>
+            </div>
+            <form class="navbar-form pull-right" id="auth-form" style="display: none;">
+                <div class="form-group">
+                    <input type="text" name="auth_username" class="form-control" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="auth_password" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
+        </div>
+    </div>
+    <h3 id="statusBar"></h2>
+    <!-- <iframe src="auth.html" style="display: none;"></iframe> -->
+</body>
+
+</html>

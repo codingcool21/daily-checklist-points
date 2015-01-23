@@ -1,0 +1,9 @@
+{
+  "firebase": "daily-checklist-points",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
