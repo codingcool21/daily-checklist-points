@@ -1,6 +1,6 @@
 var $app = {
     buttonRoutingAndChangingView: function (button) {
-        $("#nav-system").children("li").removeClass("active");
+        $("#nav-system").find("li").removeClass("active");
         $("#nav-system").find("[data-name='" + button + "']").toggleClass("active");
     },
     firebaseref: new Firebase("https://daily-checklist-points.firebaseio.com/"),
@@ -23,6 +23,17 @@ var $app = {
         $(element).css(top_or_left, windowmeasure / 2 - (element_value * 0.5) + css_word);
     }
 };
+if (localStorage.getItem("username")) {
+    $app.loggedIn = true;
+$app.firebaseref.child("users/" + localStorage.getItem("username") + "/name").on("value", function (n) {
+    $("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
+});
+} else {}
+$app.voiceCommands = {
+    "set username as :name": function (username) {
+       $("[name='auth_username']").val(username.toLowerCase());
+    }
+}
 Path.map("#home").to(function () {
     $app.buttonRoutingAndChangingView("home");
 });
@@ -33,23 +44,14 @@ Path.map("#messages").to(function () {
     $app.buttonRoutingAndChangingView("messages");
 });
 Path.root("#home");
-if (localStorage.getItem("username")) {
-    $app.loggedIn = true;
-$app.firebaseref.child("users/" + localStorage.getItem("username") + "/name").on("value", function (n) {
-    $("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
-});
-} else {}
-$app.voiceCommands = {
-    "set username as :name": function (username) {
-        $("[name='auth_username']").val(username.toLowerCase());
-    }
-}
-annyang.addCommands($app.voiceCommands);
+
+//annyang.addCommands($app.voiceCommands);
 function Start(app) {
     //app.authenticateToFirebase();
 }
 $(function () {
-    annyang.start();
+ //   Path.history.pushState({}, "", location.hash);
+  //  annyang.start();
     Path.listen();
     //$.get("auth.html", function (data) {
     //    $(data).appendTo("body");
@@ -57,4 +59,7 @@ $(function () {
     Start($app);
     //$app.centerElementOnPage("#auth-form", $("#auth-form").innerWidth(), "px", "left");
     //alert();
+    $(window).resize(function() {
+    //$(".navbar-btns").find("a").height($("#navbar").innerHeight());
+    });
 });

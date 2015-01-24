@@ -19,24 +19,28 @@
 </head>
 
 <body>
-    <div class="navbar navbar-default">
+    <div class="navbar navbar-default" id="navbar">
         <div class="container-fluid">
-            <ul id="nav-system" class="nav nav-pills pull-left" style="margin-top: 0.3%;">
-                <li data-name="home"><a href="#home">Home</a>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav pull-left" id="nav-system" style="">
+                <li class="navbar-btns" data-name="home"><a href="#home">Home</a>
                 </li>
-                <li data-name="profile"><a href="#profile">Profile</a>
+                <li class="navbar-btns" data-name="profile"><a href="#profile">Profile</a>
                 </li>
-                <li data-name="messages"><a href="#messages">Messages</a>
+                <li class="navbar-btns" data-name="messages"><a href="#messages">Messages</a>
                 </li>
             </ul>
             <!-- </div> -->
             <!-- <div class="container container-fluid"> -->
-            <div class="nav navbar-nav nav-pills pull-right">
-                <ul class="nav navbar-nav dropdown">
-                    <li href="#" data-toggle="dropdown" class="dropdown-toggle">Bryan</li>
-                </ul>
-            </div>
-            <form class="navbar-form pull-right" id="auth-form" style="display: none;">
+            <ul class="nav navbar-nav pull-right" style="display: none;">
+                <li class="dropdown nav-pills">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Username <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="nav navbar-nav navbar-form pull-right" id="auth-form" style="display: none">
                 <div class="form-group">
                     <input type="text" name="auth_username" class="form-control" placeholder="Username">
                 </div>
@@ -45,6 +49,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Log In</button>
             </form>
+            </div>
         </div>
     </div>
     <h3 id="statusBar"></h2>

@@ -24,3 +24,28 @@ button {
     text-align: center;
     font-family: monospace;
 }
+#navbar {
+}
+#nav-system {
+    width: auto;
+    position: relative;
+    right: 25px;
+}
+.navbar-btns{
+    margin: 5px;
+}
+.form-group{
+    margin-top: 5px;
+    position: relative;
+    left: 3px;
+}
+.btn {
+    margin-top: 5px;
+    position: relative;
+    left: 3px;
+}
+#auth-form {
+    position: relative;
+    left: 15px;
+    padding: 0px;
+}

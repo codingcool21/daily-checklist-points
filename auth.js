@@ -11,6 +11,9 @@ function activateLogIn() {
                 uid: "#" + username,
                 userid: username,
                 user: true
+            }, function (e) {
+                $("#auth-form").show();
+                //$("#statusBar").text("Please log in to see your checklists");
             });
             $app.firebaseref.authWithCustomToken(t, function (error, authData) {
                 if ($app.loggedIn == undefined) {
@@ -24,8 +27,8 @@ function activateLogIn() {
             });
         });
     }
-    $("#auth-form").show().on("submit", $app.authenticateToFirebase);
-    $("#statusBar").text("Please log in to see your checklists");
+    $("#auth-form").on("submit", $app.authenticateToFirebase).show();
+    
 }
 //var parent = parent.document.getElementById("auth");
 $(activateLogIn);
