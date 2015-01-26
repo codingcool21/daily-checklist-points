@@ -35,7 +35,9 @@ function activateLogIn() {
             });
         });
     };
-    
+    if(localStorage.getItem("username") == "null") {
+        $("#auth-form").on("submit", $app.authenticateToFirebase).show();
+    }
 
 }
 //var parent = parent.document.getElementById("auth");

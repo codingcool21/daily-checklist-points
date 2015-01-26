@@ -28,16 +28,13 @@ var $app = {
         $(element).css(top_or_left, windowmeasure / 2 - (element_value * 0.5) + css_word);
     }
 };
-if (localStorage.getItem("username")) {
+if (localStorage.getItem("username") !== "null") {
     $app.firebaseref.child("users/" + localStorage.getItem("username") + "/name").on("value", function (n) {
         $app.loggedIn = true;
         $("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
         $("#auth-form").hide();
         $("#logged-in").find("#username-p").text(localStorage.getItem("fullname"));
         $("#logged-in").show();
-    }, function(error) {
-        $("#auth_username").val(localStorage.getItem("username"));
-        $("#auth-form").on("submit", $app.authenticateToFirebase).show();
     });
 } else {
     $("#auth-form").on("submit", $app.authenticateToFirebase).show();
@@ -53,10 +50,11 @@ Path.map("#home").to(function () {
 Path.map("#profile").to(function () {
     $app.buttonRoutingAndChangingView("profile");
 });
-Path.map("#messages").to(function () {
-    $app.buttonRoutingAndChangingView("messages");
+Path.map("#templates").to(function () {
+    $app.buttonRoutingAndChangingView("templates");
 });
 Path.map("#logout").to(function () {
+    localStorage.setItem("username", null);
     $app.loggedIn = undefined;
     $app.firebaseref.unauth();
     location.href = "#home";
