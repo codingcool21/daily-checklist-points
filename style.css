@@ -49,3 +49,9 @@ button {
     left: 15px;
     padding: 0px;
 }
+#username-p {
+    display: inline-block;
+}
+#logged-in {
+    margin-right: 50px;
+}
