@@ -24,34 +24,38 @@ button {
     text-align: center;
     font-family: monospace;
 }
-#navbar {
-}
-#nav-system {
+/*#navbar #nav-system {
     width: auto;
     position: relative;
     right: 25px;
+}*/
+
+.navbar-btns {
+    margin: 3px;
 }
-.navbar-btns{
-    margin: 5px;
-}
-.form-group{
-    margin-top: 5px;
-    position: relative;
-    left: 3px;
+.form-group {
+    /*margin-top: 5px;*/
+    /*position: relative;*/
+    /*left: 3px;*/
 }
 .btn {
-    margin-top: 5px;
+    /*margin-top: 5px;*/
     position: relative;
-    left: 3px;
+    /*margin-left: 3px;*/
 }
-#auth-form {
-    position: relative;
-    left: 15px;
-    padding: 0px;
+#auth-form > .form-group > input {
+    /*position: relative;*/
+    /*left: 15px;*/
+    /*padding: 0px;*/
+    display: inline-block;
 }
 #username-p {
     display: inline-block;
 }
-#logged-in {
-    margin-right: 50px;
+.title {
+    background-color: #8fbfba;
+    border: 1.8px solid black;
+    padding: 0;
+    margin-bottom: 25px;
+    vertical-align: middle;
 }

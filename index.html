@@ -26,9 +26,17 @@
 
 <body>
     <div class="navbar navbar-default" id="navbar">
-        <div class="container-fluid">
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav pull-left" id="nav-system" style="">
+        <div class="container">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-coll" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- </div> -->
+            <!-- <div class="container container-fluid"> -->
+            <div id="nav-coll" class="navbar-collapse collapse in">
+                <ul class="nav navbar-nav navbar-left" id="nav-system" style="">
                     <li class="navbar-btns" data-name="home"><a href="#home">Home</a>
                     </li>
                     <li class="navbar-btns" data-name="profile"><a href="#profile">Profile</a>
@@ -36,30 +44,32 @@
                     <li class="navbar-btns" data-name="templates"><a href="#templates">Checklist Templates</a>
                     </li>
                 </ul>
-                <!-- </div> -->
-                <!-- <div class="container container-fluid"> -->
-                <ul class="nav navbar-nav pull-right" style="display: none;" id="logged-in">
+                <ul class="nav navbar-nav navbar-right" style="display: none;" id="logged-in">
                     <li class="dropdown nav-pills">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle"><p id="username-p"></p> <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                            <p id="username-p"></p> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
                             <li><a href="#logout">Logout</a>
                             </li>
                         </ul>
                     </li>
                 </ul>
-                <form class="nav navbar-nav navbar-form pull-right" id="auth-form" style="display: none">
+                <form class="navbar-form navbar-right" id="auth-form" role="search" style="display: none">
                     <div class="form-group">
-                        <input type="text" name="auth_username" class="form-control" placeholder="Username">
+                        <input type="text" name="auth_username" class="form-control" placeholder="Username" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="auth_password" class="form-control" placeholder="Password">
+                        <input type="password" name="auth_password" class="form-control" placeholder="Password" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Log In</button>
                 </form>
             </div>
         </div>
     </div>
-    <h3 id="statusBar"></h2>
+    <div class="col-lg-6 col-md-offset-3" id="body-container">
+        <h3 id="statusBar"></h3>
+    </div>
     <!-- <iframe src="auth.html" style="display: none;"></iframe> -->
 </body>
 

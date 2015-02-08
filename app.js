@@ -1,4 +1,61 @@
+if (localStorage.getItem("username") == null || localStorage.getItem("username") == "") {
+    localStorage.setItem("username", null);
+}
 var $app = {
+    initFirebase: function (firebaseusername) {
+        $app.firebaseref.child("users/" + firebaseusername + "/name").on("value", function (n) {
+            $app.loggedIn = true;
+            //$("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
+            $("#auth-form").hide();
+            $("#logged-in").find("#username-p").text(localStorage.getItem("fullname"));
+            $("#logged-in").show();
+        }, function (e) {
+            switch (e.code) {
+            case "PERMISSION_DENIED":
+                localStorage.setItem("username", null);
+                $("#auth-form").on("submit", $app.authenticateToFirebase).show();
+                localStorage.clear()
+                location.reload();
+                break;
+            }
+        });
+        $app.firebaseref.child("users/" + firebaseusername + "/checklists/").on("value", function (cu, la) {
+            if (cu.val() == null) {
+                $("#statusBar").text("No checklists found!");
+            } else {
+                $("#statusBar").text("");
+                $app.firebaseref.child("users/" + firebaseusername + "/checklists/").on("value", function (e) {
+                    //console.log(e.val());
+                    console.log(e.val());
+                    $app.receivedChecklists = {};
+                    for (var prop in e.val()) {
+                        if (e.val().hasOwnProperty(prop)) {
+                            $app.receivedChecklists[prop] = e.val()[prop];
+                        }
+                    }
+                    $app.updateChecklistView();
+                });
+            }
+        });
+
+    },
+    updateChecklistView: function () {
+        for (var obj in $app.receivedChecklists) {
+            if (!$("[data-checklistname='" + obj + "']").length) {
+                $('<div class="title" data-checklistname="' + obj + '"></div>').html("<h2>" + obj + "</h2>").css("text-align", "center").appendTo("#body-container");
+            } else {
+                $("[data-checklistname='" + obj + "']").html("<h2>" + obj + "</h2>").attr("data-checklistname", obj);
+            }
+        }
+        $("[data-checklistname]").each(function (i) {
+            if ($app.receivedChecklists[$(this).attr("data-checklistname")] == undefined) {
+                $(this).remove();
+                $app.receivedChecklists[$(this).attr("data-checklistname")] = undefined;
+            } else {}
+        });
+        //$('<div class="title" data-checklistname="' + prop + '"></div>').attr("data-checklistname ", prop).html(" < h2 > " + prop + " < /h2>").css("text-align", "center").appendTo("#body-container");
+    },
+    receivedChecklists: {},
     createDialogWithHTML: function (html) {
         vex.open({
             content: html
@@ -29,13 +86,8 @@ var $app = {
     }
 };
 if (localStorage.getItem("username") !== "null") {
-    $app.firebaseref.child("users/" + localStorage.getItem("username") + "/name").on("value", function (n) {
-        $app.loggedIn = true;
-        $("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
-        $("#auth-form").hide();
-        $("#logged-in").find("#username-p").text(localStorage.getItem("fullname"));
-        $("#logged-in").show();
-    });
+    var firebaseusername = localStorage.getItem("username");
+    $app.initFirebase(firebaseusername);
 } else {
     $("#auth-form").on("submit", $app.authenticateToFirebase).show();
 }
@@ -54,15 +106,16 @@ Path.map("#templates").to(function () {
     $app.buttonRoutingAndChangingView("templates");
 });
 Path.map("#logout").to(function () {
-    localStorage.setItem("username", null);
     $app.loggedIn = undefined;
     $app.firebaseref.unauth();
     location.href = "#home";
+    localStorage.clear();
     location.reload();
 });
 Path.root("#home");
 
-//annyang.addCommands($app.voiceCommands);
+annyang.addCommands($app.voiceCommands);
+
 function start(app) {
     //app.authenticateToFirebase();
 }

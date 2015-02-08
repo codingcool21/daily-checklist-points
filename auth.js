@@ -6,8 +6,13 @@ var $ = window.jQuery,
 function activateLogIn() {
     $app.authenticateToFirebase = function (event) {
         event.preventDefault();
-        localStorage.setItem("username", $("#auth-form").find("[name='auth_username']").val());
-        var username = localStorage.getItem("username"),
+        if ($("#auth-form").find("[name='auth_username']").val() == "") {
+            localStorage.setItem("username", null);
+            location.reload();
+        } else {
+            localStorage.setItem("username", $("#auth-form").find("[name='auth_username']").val());
+        }
+        var username = localStorage.getItem("username").toLowerCase(),
             password = $("#auth-form").find("[name='auth_password']").val();
         $app.firebaseref.child("users/" + username + "/authkey").on("value", function (data) {
             var d = CryptoJS.AES.decrypt(data.val(), password).toString(CryptoJS.enc.Utf8),
@@ -20,7 +25,7 @@ function activateLogIn() {
             $app.firebaseref.authWithCustomToken(t, function (error, authData) {
                 if ($app.loggedIn === undefined) {
                     $app.firebaseref.child("users/" + username + "/name").on("value", function (n) {
-                        $("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
+                        //$("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
                         $("#auth-form").find("input").val("");
                         $("#auth-form").hide();
                         $("#logged-in").show();
@@ -28,6 +33,7 @@ function activateLogIn() {
                         localStorage.setItem("fullname", n.val());
                         $("#username-p").text(n.val());
                         $app.loggedIn = true;
+                        $app.initFirebase(username);
                     });
                 } else {
                     return false;
@@ -35,7 +41,7 @@ function activateLogIn() {
             });
         });
     };
-    if(localStorage.getItem("username") == "null") {
+    if (localStorage.getItem("username") === "null") {
         $("#auth-form").on("submit", $app.authenticateToFirebase).show();
     }
 
