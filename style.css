@@ -52,10 +52,29 @@ button {
 #username-p {
     display: inline-block;
 }
-.title {
-    background-color: #8fbfba;
-    border: 1.8px solid black;
-    padding: 0;
-    margin-bottom: 25px;
+.title > h2 {
+    border-radius: 5px;
+    background-color: rgb(229, 229, 229);
+    padding: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 1px;
     vertical-align: middle;
+}
+.title > h2:hover {
+    background-color: rgb(196, 196, 196);
+}
+.title > h2 {
+    font-size: 35px;
+}
+.tasks {
+    display: inline-block;
+    border-radius: 0px;
+    background-color: rgb(255, 245, 245);
+    padding: 2px;
+}
+.tasks:hover {
+    background-color: rgb(217, 217, 217);
+}
+.tasks > .checkbox > input {
+    height: 80px;
 }

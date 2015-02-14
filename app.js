@@ -2,7 +2,15 @@ if (localStorage.getItem("username") == null || localStorage.getItem("username")
     localStorage.setItem("username", null);
 }
 var $app = {
+    sendUpdateToFirebase: function (object, check_name, item_name) {
+        console.log("reached update func");
+
+        $app.firebaseref.child("users/" + $app.firebaseUsername + "/checklists/" + check_name + "/" + item_name + "/done").set(String(object.prop("checked")));
+        objectTemp = undefined;
+        //$app.updateChecklistView();
+    },
     initFirebase: function (firebaseusername) {
+        $app.firebaseUsername = firebaseusername;
         $app.firebaseref.child("users/" + firebaseusername + "/name").on("value", function (n) {
             $app.loggedIn = true;
             //$("#statusBar").text("Welcome back, " + n.val() + ". Firebase is now connected!");
@@ -39,19 +47,67 @@ var $app = {
         });
 
     },
+    tempChecklistsData: {},
     updateChecklistView: function () {
         for (var obj in $app.receivedChecklists) {
             if (!$("[data-checklistname='" + obj + "']").length) {
                 $('<div class="title" data-checklistname="' + obj + '"></div>').html("<h2>" + obj + "</h2>").css("text-align", "center").appendTo("#body-container");
+                $app.tempChecklistsData[obj] = [];
+                for (var objdata in $app.receivedChecklists[obj]) {
+                    if ($app.receivedChecklists[obj].hasOwnProperty(objdata)) {
+                        var number = Number(objdata.split("_")[1]);
+                        $app.tempChecklistsData[obj][number - 1] = $app.receivedChecklists[obj][objdata];
+                    }
+                }
+                for (var i = 0; i < $app.tempChecklistsData[obj].length; i++) {
+                    var isTrueSet = ($app.tempChecklistsData[obj][i].done == 'true');
+                    //console.log(isTrueSet);
+                    var text = $("<div class='tasks col-md-10'>").html("<h4>" + $app.tempChecklistsData[obj][i].name + "</h4>");
+                    var checkbox = $("<div class='tasks col-md-2 '>").html("<div class='checkbox colmd-10 col-md-offset-2 pull-left'><input type='checkbox' id='" + obj + "_" + i + "'/><label for='" + obj + "_" + i + "'>" + (isTrueSet ? "Done" : "Not done") + "</label></div>").find("input").attr("checked", isTrueSet).parent().parent();
+                    //console.log("text is ... " + text + " and checkbox is ... " + checkbox);
+                    $($(text)).add($(checkbox)).appendTo("[data-checklistname='" + obj + "']");
+                    $("#" + obj + "_" + i).change(function () {
+                        var objcall = $(this);
+                        console.log("reached change");
+                        objcall.prop("checked", (objcall.prop("checked") ? true : false));
+                        $app.sendUpdateToFirebase(objcall, obj, "item_" + i);
+                    });
+                }
+                $app.tempChecklistsData = {};
             } else {
                 $("[data-checklistname='" + obj + "']").html("<h2>" + obj + "</h2>").attr("data-checklistname", obj);
+                $("[data-checklistname='" + obj + "'] > .tasks").remove();
+                $app.tempChecklistsData[obj] = [];
+                for (var objdata in $app.receivedChecklists[obj]) {
+                    if ($app.receivedChecklists[obj].hasOwnProperty(objdata)) {
+                        var number = Number(objdata.split("_")[1]);
+                        $app.tempChecklistsData[obj][number - 1] = $app.receivedChecklists[obj][objdata];
+                    }
+                }
+                for (var i = 0; i < $app.tempChecklistsData[obj].length; i++) {
+                    var isTrueSet = ($app.tempChecklistsData[obj][i].done == 'true');
+                    //console.log(isTrueSet);
+                    var text = $("<div class='tasks col-md-10'>").html("<h4>" + $app.tempChecklistsData[obj][i].name + "</h4>");
+                    var checkbox = $("<div class='tasks col-md-2 '>").html("<div class='checkbox colmd-10 col-md-offset-2 pull-left'><input type='checkbox' id='" + obj + "_" + i + "'/><label for='" + obj + "_" + i + "'>" + (isTrueSet ? "Done" : "Not done") + "</label></div>").find("input").attr("checked", isTrueSet).parent().parent();
+                    //console.log("text is ... " + text + " and checkbox is ... " + checkbox);
+                    $($(text)).add($(checkbox)).appendTo("[data-checklistname='" + obj + "']");
+                    $("#" + obj + "_" + i).change(function () {
+                        var objcall = $(this);
+                        console.log("reached change");
+                        objcall.prop("checked", (objcall.prop("checked") ? true : false));
+                        $app.sendUpdateToFirebase(objcall, obj, "item_" + i);
+                    });
+                }
+                $app.tempChecklistsData = {};
             }
         }
         $("[data-checklistname]").each(function (i) {
             if ($app.receivedChecklists[$(this).attr("data-checklistname")] == undefined) {
                 $(this).remove();
                 $app.receivedChecklists[$(this).attr("data-checklistname")] = undefined;
-            } else {}
+            } else {
+                return;
+            }
         });
         //$('<div class="title" data-checklistname="' + prop + '"></div>').attr("data-checklistname ", prop).html(" < h2 > " + prop + " < /h2>").css("text-align", "center").appendTo("#body-container");
     },
@@ -113,7 +169,15 @@ Path.map("#logout").to(function () {
     location.reload();
 });
 Path.root("#home");
-
+Mousetrap.bind("alt+p", function () {
+    location.href = "#profile";
+});
+Mousetrap.bind("alt+h", function () {
+    location.href = "#home";
+});
+Mousetrap.bind("alt+c+t", function () {
+    location.href = "#templates";
+});
 annyang.addCommands($app.voiceCommands);
 
 function start(app) {
