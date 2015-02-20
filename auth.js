@@ -22,6 +22,7 @@ function activateLogIn() {
                     userid: username,
                     user: true
                 });
+            //console.log(t);
             $app.firebaseref.authWithCustomToken(t, function (error, authData) {
                 if ($app.loggedIn === undefined) {
                     $app.firebaseref.child("users/" + username + "/name").on("value", function (n) {
