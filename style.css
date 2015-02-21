@@ -78,6 +78,10 @@ button {
 .tasks h4 {
     display: inline-block;
 }
+h2.tasks {
+    margin: 0;
+    margin-top: 9px;
+}
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -88,4 +92,27 @@ button {
 }
 .navbar-toggle {
     margin-right: 0;
+}
+.checkbox-label {
+    font-size: 1.05em;
+}
+.checkbox-p {
+    padding-left: 2em;
+}
+input[type=checkbox] {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1.575);
+    /* IE */
+    -moz-transform: scale(1.575);
+    /* FF */
+    -webkit-transform: scale(1.575);
+    /* Safari and Chrome */
+    -o-transform: scale(1.575);
+    /* Opera */
+    padding: 14px;
+}
+input.big {
+    font-size: 110%;
+    display: inline;
+    margin: 12px 12px 0 -24px;
 }

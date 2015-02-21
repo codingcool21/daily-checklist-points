@@ -5,6 +5,7 @@ var $app = {
     deleteItemFromChecklist: function (check_name, check_item) {
 
     },
+    storedChecklists: {},
     sendUpdateToFirebase: function (object, check_name, item_name) {
         //console.log("reached update func");
 
@@ -43,6 +44,7 @@ var $app = {
                     for (var prop in e.val()) {
                         if (e.val().hasOwnProperty(prop)) {
                             $app.receivedChecklists[prop] = e.val()[prop];
+                            $app.storedChecklists[prop] = e.val()[prop];
                         }
                     }
                     $app.updateChecklistView();
@@ -52,12 +54,37 @@ var $app = {
 
     },
     tempChecklistsData: {},
+    addListItem: function (obj, i) {
+        var isTrueSet = ($app.tempChecklistsData[obj][i].done == 'true');
+        //console.log(isTrueSet);
+        var text = $("<div class='tasks col-xs-12 col-sm-9 col-md-9'>").html("<h4>" + $app.tempChecklistsData[obj][i].name + "</h4>");
+        var checkbox = $("<div id='" + obj + "_" + (i + 1) + "_C" + "' class='tasks col-xs-12 col-sm-3 col-md-3'>").html("<div class='checkbox-p col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2'><input data-item-num='" + (i + 1) + "' class='big' type='checkbox' id='" + obj + "_" + (i + 1) + "'/><h4 class='checkbox-label' style='font-weight: bold'>" + (isTrueSet ? "Done" : "Not done") + "</label></div>").find("input").attr("checked", isTrueSet).parent().parent();
+        $.checkbox = checkbox;
+        //console.log("text is ... " + text + " and checkbox is ... " + checkbox);
+        $($(text)).add($(checkbox)).appendTo("[data-checklistname='" + obj + "']");
+        $("#" + obj + "_" + (i + 1)).on("select", function () {
+            var objcall = $(this);
+            //console.log("reached change");
+            objcall.prop("checked", (objcall.prop("checked") ? true : false));
+            var io = Number(objcall.attr("data-item-num"));
+            $app.sendUpdateToFirebase(objcall, obj, "item_" + (io));
+        }).change(function (e) {
+            $(this).trigger("select");
+        });
+        $("#" + obj + "_" + (i + 1) + "_C").click(function () {
+            console.log("clicked the div for checklist " + obj + ", item " + (i + 1));
+            var obj_c = $(this);
+            //obj_c.find("input").prop("checked", ($(obj_c.find("input")).prop("checked") ? false : true));
+            obj_c.find("input").prop("checked", (obj_c.find("input").prop("checked") ? false : true));
+            obj_c.find("input").trigger("select");
+        });
+    },
     updateChecklistView: function () {
         for (var obj in $app.receivedChecklists) {
             if (!$("[data-checklistname='" + obj + "']").length) {
-                $('<div class="container-fluid"><div class="row"><div class="title" data-checklistname="' + obj + '"></div></div></div>').find(".title").html("<h2>" + obj + "</h2>").css("text-align", "center").appendTo("#body-container");
+                $('<div class="container-fluid"><div class="row"><div class="title" data-checklistname="' + obj + '">').find(".title").html("<h2>" + obj + "</h2>").css("text-align", "center").appendTo("#body-container");
                 if ($app.receivedChecklists[obj].empty == true) {
-                    $("<h2 class='tasks'>No Items</h2>").appendTo("[data-checklistname='" + obj + "']");
+                    $("<div class='row'><h2 class='tasks'>No Items</h2></div>").appendTo("[data-checklistname='" + obj + "']");
                     return;
                 }
                 $app.tempChecklistsData[obj] = [];
@@ -68,32 +95,14 @@ var $app = {
                     }
                 }
                 for (var i = 0; i < $app.tempChecklistsData[obj].length; i++) {
-                    var isTrueSet = ($app.tempChecklistsData[obj][i].done == 'true');
-                    //console.log(isTrueSet);
-                    var text = $("<div class='tasks col-xs-8 col-sm-9 col-md-9'>").html("<h4>" + $app.tempChecklistsData[obj][i].name + "</h4>");
-                    var checkbox = $("<div class='tasks col-xs-3 col-sm-3 col-md-3'>").html("<div class='col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 pull-left'><input class='checkboxes big' type='checkbox' id='" + obj + "_" + i + "'/><h4 style='font-weight: bold'>" + (isTrueSet ? "Done" : "Not done") + "</label></div>").find("input").attr("checked", isTrueSet).parent().parent();
-                    $.checkbox = checkbox;
-                    //console.log("text is ... " + text + " and checkbox is ... " + checkbox);
-                    $($(text)).add($(checkbox)).appendTo("[data-checklistname='" + obj + "']");
-                    $("#" + obj + "_" + i).change(function () {
-                        var objcall = $(this);
-                        //console.log("reached change");
-                        objcall.prop("checked", (objcall.prop("checked") ? true : false));
-                        $app.sendUpdateToFirebase(objcall, obj, "item_" + i);
-                    });
-                    $(checkbox).click(function () {
-                        console.log("clicked the div for checklist " + obj + ", item " + i);
-                        var obj_c = $(this);
-                        obj_c.find("input").prop("checked", ($(obj_c.find("input")).prop("checked") ? false : true));
-                        $app.sendUpdateToFirebase(obj_c.find("input"), obj, "item_" + i);
-                    });
+                    $app.addListItem(obj, Number(i));
                 }
                 $app.tempChecklistsData = {};
             } else {
                 $("[data-checklistname='" + obj + "']").html("<h2>" + obj + "</h2>").attr("data-checklistname", obj);
                 $("[data-checklistname='" + obj + "'] > .tasks").remove();
                 if ($app.receivedChecklists[obj].empty == true) {
-                    $("<h2 class='tasks'>No Items</h2>").appendTo("[data-checklistname='" + obj + "']");
+                    $("<div class='row'><h2 class='tasks'>No Items</h2></div>").appendTo("[data-checklistname='" + obj + "']");
                     return;
                 }
                 $app.tempChecklistsData[obj] = [];
@@ -104,25 +113,7 @@ var $app = {
                     }
                 }
                 for (var i = 0; i < $app.tempChecklistsData[obj].length; i++) {
-                    var isTrueSet = ($app.tempChecklistsData[obj][i].done == 'true');
-                    //console.log(isTrueSet);
-                    var text = $("<div class='tasks col-xs-8 col-sm-9 col-md-9'>").html("<h4>" + $app.tempChecklistsData[obj][i].name + "</h4>");
-                    var checkbox = $("<div class='tasks col-xs-3 col-sm-3 col-md-3'>").html("<div class='col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 pull-left'><input class='checkboxes big' type='checkbox' id='" + obj + "_" + i + "'/><h4 style='font-weight: bold'>" + (isTrueSet ? "Done" : "Not done") + "</label></div>").find("input").attr("checked", isTrueSet).parent().parent();
-                    $.checkbox = checkbox;
-                    //console.log("text is ... " + text + " and checkbox is ... " + checkbox);
-                    $($(text)).add($(checkbox)).appendTo("[data-checklistname='" + obj + "']");
-                    $("#" + obj + "_" + i).change(function () {
-                        var objcall = $(this);
-                        //console.log("reached change");
-                        objcall.prop("checked", (objcall.prop("checked") ? true : false));
-                        $app.sendUpdateToFirebase(objcall, obj, "item_" + i);
-                    });
-                    $(checkbox).click(function () {
-                        console.log("clicked the div for checklist " + obj + ", item " + i);
-                        var obj_c = $(this);
-                        obj_c.find("input").prop("checked", ($(obj_c.find("input")).prop("checked") ? false : true));
-                        $app.sendUpdateToFirebase(obj_c.find("input"), obj, "item_" + i);
-                    });
+                    $app.addListItem(obj, Number(i));
                 }
                 $app.tempChecklistsData = {};
             }
